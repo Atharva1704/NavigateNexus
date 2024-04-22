@@ -127,8 +127,8 @@ const Forms = () => {
             
             {/* commuteName commuteCode departureDateTime arrivalDateTime */}
 
-            <TextField
-              label="Train Name"
+            {/* <TextField
+              label="Flight or Train"
               onBlur={handleBlur}
               onChange={
                 handleChange
@@ -139,7 +139,20 @@ const Forms = () => {
               error={Boolean(touched.commuteName) && Boolean(errors.commuteName)}
               helperText={touched.commuteName && errors.commuteName}
               sx={{ gridColumn: "span 4" }}
-            />
+            /> */}
+            <TextField
+            label="Train Name"
+            onBlur={handleBlur}
+            onChange={
+              handleChange
+            
+            }
+            value={values.commuteName}
+            name="commuteName"
+            error={Boolean(touched.commuteName) && Boolean(errors.commuteName)}
+            helperText={touched.commuteName && errors.commuteName}
+            sx={{ gridColumn: "span 4" }}
+          />
 
             <TextField
               label="Train Number"

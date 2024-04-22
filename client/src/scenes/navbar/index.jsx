@@ -56,7 +56,7 @@ const Navbar = () => {
             },
           }}
         >
-          TravelMate
+          NavigateNexus
         </Typography>
         {/* {isNonMobileScreens && (
           <FlexBetween

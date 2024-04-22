@@ -30,26 +30,52 @@ export const logTravel = async (req,res)=>{
 }
 
 
-
 export const getOne = async (req, res) => {
   try {
-    console.log("hi"); // Enclosed "hi" in quotes
     const { code, depart, arrival } = req.query;
 
-    console.log(depart);
-    console.log(arrival);
-    
-    const travelDetails = await travelDetail.find({ code });
-  
-    if (!travelDetails || travelDetails.length === 0) {
-      return res.status(404).json({ msg: "Travel details not found" });
+    // Check if all three parameters are provided
+    if (!code || !depart || !arrival) {
+      return res.status(400).json({ msg: "Missing parameters" });
     }
-  
+
+    // First, try to find direct matches
+    let travelDetails = await travelDetail.find({ code, depart, arrival });
+    
+    travelDetails = await travelDetail.find({ code });
+
+    // If still no matches, try to find matches with matching code
+    if (!travelDetails || travelDetails.length === 0) {
+      travelDetails = await travelDetail.find({ code });
+    }
+    
+    // If no direct matches, try to find matches with matching code and depart
+    if (!travelDetails || travelDetails.length === 0) {
+      travelDetails = await travelDetail.find({ code, depart });
+    }
+
+    // If still no matches, calculate the difference between depart and arrival
+    if (!travelDetails || travelDetails.length === 0) {
+      const difference = calculateDifference(depart, arrival);
+      return res.status(404).json({ msg: "No direct or partial matches found", difference });
+    }
+
+    // If matches found, send them in the response
     res.status(200).json(travelDetails);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
+// Function to calculate the difference between two date-time strings
+const calculateDifference = (depart, arrival) => {
+  const departTime = new Date(depart).getTime();
+  const arrivalTime = new Date(arrival).getTime();
+  const differenceInMilliseconds = Math.abs(arrivalTime - departTime);
+  const differenceInMinutes = differenceInMilliseconds / (1000 * 60);
+  return differenceInMinutes;
+};
+
 
 
   export const findMate = async (req, res) => {
