@@ -21,7 +21,7 @@ import User from "./models/User.js";
 import Post from "./models/Post.js";
 import { users,posts} from "./data/index.js";
 import 'dotenv/config';
-import { logTravel, getOne, findMate } from "./controllers/travelDetail.js";
+import { logTravel, getOne, findYourself, find } from "./controllers/travelDetail.js";
 
 
 /* CONFIGURATION */
@@ -68,7 +68,8 @@ app.post("/travel", logTravel);
 // app.get("/travel/:id", getTravelDetails);
 // app.post("/posts", verifyToken, upload.single("picture"), createPost);
 app.get("/findTravelMate", getOne);
-app.get("/travels/:id", findMate);
+app.get("/travels/:id", findYourself);
+app.get('/travels', find);
 console.log("FindMate !");
 
 
@@ -80,6 +81,7 @@ app.use("/auth", authRoutes); // checked on postman
 app.use("/users", userRoutes);
 // app.use("/travel", travelRoutes);
 // app.use("/posts", postRoutes);
+
 
 // Mongoose SETUP
 

@@ -1,6 +1,4 @@
 import travelDetail from "../models/travelDetail.js";
-import User from "../models/User.js";
-// Register User
 
 export const logTravel = async (req,res)=>{
     try{
@@ -30,42 +28,42 @@ export const logTravel = async (req,res)=>{
 }
 
 
-export const getOne = async (req, res) => {
-  try {
-    const { code, depart, arrival } = req.query;
+// export const getOne = async (req, res) => {
+//   try {
+//     const { code, depart, arrival } = req.query;
 
-    // Check if all three parameters are provided
-    if (!code || !depart || !arrival) {
-      return res.status(400).json({ msg: "Missing parameters" });
-    }
+//     // Check if all three parameters are provided
+//     if (!code || !depart || !arrival) {
+//       return res.status(400).json({ msg: "Missing parameters" });
+//     }
 
-    // First, try to find direct matches
-    let travelDetails = await travelDetail.find({ code, depart, arrival });
+//     // First, try to find direct matches
+//     let travelDetails = await travelDetail.find({ code, depart, arrival });
     
-    travelDetails = await travelDetail.find({ code });
+//     travelDetails = await travelDetail.find({ code });
 
-    // If still no matches, try to find matches with matching code
-    if (!travelDetails || travelDetails.length === 0) {
-      travelDetails = await travelDetail.find({ code });
-    }
+//     // If still no matches, try to find matches with matching code
+//     if (!travelDetails || travelDetails.length === 0) {
+//       travelDetails = await travelDetail.find({ code });
+//     }
     
-    // If no direct matches, try to find matches with matching code and depart
-    if (!travelDetails || travelDetails.length === 0) {
-      travelDetails = await travelDetail.find({ code, depart });
-    }
+//     // If no direct matches, try to find matches with matching code and depart
+//     if (!travelDetails || travelDetails.length === 0) {
+//       travelDetails = await travelDetail.find({ code, depart });
+//     }
 
-    // If still no matches, calculate the difference between depart and arrival
-    if (!travelDetails || travelDetails.length === 0) {
-      const difference = calculateDifference(depart, arrival);
-      return res.status(404).json({ msg: "No direct or partial matches found", difference });
-    }
+//     // If still no matches, calculate the difference between depart and arrival
+//     if (!travelDetails || travelDetails.length === 0) {
+//       const difference = calculateDifference(depart, arrival);
+//       return res.status(404).json({ msg: "No direct or partial matches found", difference });
+//     }
 
-    // If matches found, send them in the response
-    res.status(200).json(travelDetails);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+//     // If matches found, send them in the response
+//     res.status(200).json(travelDetails);
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
 
 // Function to calculate the difference between two date-time strings
 const calculateDifference = (depart, arrival) => {
@@ -78,40 +76,55 @@ const calculateDifference = (depart, arrival) => {
 
 
 
-  export const findMate = async (req, res) => {
-    try {
-        console.log("FindMate entered!");
-        const { id } = req.params;
-        console.log(id);
-        const travel = await travelDetail.findById(id);
-        console.log(travel);
-
-        if (!travel) {
-            return res.status(404).json({ error: "Travel data not found" });
-        }
-
-        res.json(travel);
-    } catch (err) {
-        console.error("Error finding travel data:", err);
-        res.status(500).json({ error: err.message, msg: "Error in finding person" });
+export const findYourself = async (req, res) => {
+  try {
+    console.log("FindMate entered!");
+    const { id } = req.params;
+    console.log(id);
+    const travel = await travelDetail.findById(id);
+    console.log(travel);
+    if (!travel) {
+      return res.status(404).json({ error: "Travel data not found" });
     }
+
+    res.json(travel);
+  } catch (err) {
+    console.error("Error finding travel data:", err);
+    res.status(500).json({ error: err.message, msg: "Error in finding person" });
+  }
 }
 
+export const find = async (req, res) => {
+  // Retrieve query parameters from the request
+  const { arrival, depart, commuteCode } = req.query;
+  // const [travellers, setTravellers] = useState([]);
 
 
-// export const getOne = async(req, res) =>{
-//     try {
+  // Log the query parameters
+  console.log("hii")
+  console.log(arrival);
+  console.log(depart);
+  console.log(commuteCode);
 
-//         const id = req.params.id;
-//         const userExist = await travelDetail.findById(id);
-//         if(!userExist){
-//             return res.status(404).json({msg: "User not found"});
-//         }
-//         res.status(200).json(userExist);
+
+  
+
+  // Send a response to the client
+  res.send('Query parameters received and logged successfully!');
+}
+
+export const getOne = async(req, res) =>{
+  try {
+    const id = req.params.id;
+    const userExist = await travelDetail.findById(id);
+    if(!userExist){
+      return res.status(404).json({msg: "User not found"});
+    }
+    res.status(200).json(userExist);
         
-//     } catch (error) {
-//         res.status(500).json({error: error});
-//     }
-// }
+  } catch (error) {
+      res.status(500).json({error: error});
+  }
+}
 
 // const { travelDetail } = require("../models"); // Import the TravelDetail model
