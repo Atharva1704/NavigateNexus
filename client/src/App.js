@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme";
-import TravelsList from "./scenes/TravelList/TravelsList.jsx";
+import TravelList from "./scenes/TravelList/TravelList.jsx";
 import ChatBox from "./scenes/ChatBox/ChatBox";
 
 function App() {
@@ -27,7 +27,7 @@ function App() {
             />
             <Route
               path="/travel-list/:id"
-              element={isAuth ? <TravelsList /> : <Navigate to="/" />}
+              element={isAuth ? <TravelList /> : <Navigate to="/" />}
             />
             <Route
               path = "/chat-room"

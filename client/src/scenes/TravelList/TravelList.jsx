@@ -3,35 +3,122 @@ import axios from "axios";
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import Navbar from "../navbar";
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
 
-const TravelList = ({ commuteCode, depart, arrival }) => {
-  const [travelDetails, setTravelDetails] = useState([]); // Initialize as an empty array
 
-  const navigate = useNavigate();
+
+
+const TravelList = () => {
+
+  const { id } = useParams();
+  const [commuteCode, setcommuteCode] = useState()
+  const [depart, setDepart] = useState('')
+  const [arrival, setArrival] = useState('')
+  const [commuteName, setCommuteName] = useState('');
+
+  // fetch your own Details 
   useEffect(() => {
-    const fetchTravelDetails = async () => {
+    const fetchYourTravelDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/findTravelMate`, {
-          params: {
-            commuteCode: commuteCode,
-            depart: depart,
-            arrival: arrival
-          }
-        });
-        console.log(response.data);
-        setTravelDetails(response.data); // Set the array of travel details
-      } catch (error) {
-        console.error("Error fetching travel details:", error);
-      }
+        console.log("P10");
+        const res = await axios.get(`http://localhost:3001/travels/${id}`);
+        setcommuteCode(res.data.commuteCode);
+        setDepart(res.data.departureDateTime);
+        setArrival(res.data.arrivalDateTime);
+        setCommuteName(res.data.commuteName);
+        
+
+      } catch (err) {
+        console.error(err); // Log error for debugging
+      } 
     };
 
-    fetchTravelDetails();
-  }, [commuteCode]);
+    fetchYourTravelDetails();
+    setCheck(!check);
+   
+  }, [id]);
+
+
+  const [travelDetails, setTravelDetails] = useState([]); // Initialize as an empty array
+  const [check, setCheck] = useState(false);
+  useEffect(() => {
+    const findTravelMate = async () => {
+      try {
+        console.log("P11");
+        
+        if (arrival && depart && commuteCode) { 
+          console.log("insides")
+          const url = `http://localhost:3001/travels?arrival=${arrival}&depart=${depart}&commuteCode=${commuteCode}`;
+  
+          const res = await axios.get(url);
+          console.log(res);
+        }
+        
+      } catch (err) {
+        console.error(err); // Log error for debugging
+      } 
+    };
+    findTravelMate();
+
+
+  }, [check, arrival, depart, commuteCode]);
+
+  const navigate = useNavigate();
+
+
+  // card function to show user Details
+  const card = (
+    <Box>
+      <CardContent >
+      <Typography> {commuteName} </Typography>
+  
+        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+          {commuteCode}
+        </Typography>
+        <Box>
+              <Typography variant="h5">
+                  Arrival : {arrival}
+              </Typography>
+              <Typography variant="h5">
+                  Departure : {depart}
+              </Typography>
+          </Box>
+        
+      </CardContent>
+      <CardActions>
+        <Button size="small">Select This as your Travel</Button>
+      </CardActions>
+    </Box>
+  );
 
   return (
-    <div>
-      <h2>Travel Details for Commute Code: {commuteCode}</h2>
+    <Box>
+      <Navbar />
+      <Box 
+        my={3}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Typography variant="h2"> Your Travel Details!</Typography>
+        <Box 
+          height={200}
+          width={400}
+          my={4}
+          mx = {3}
+        >
+          <Card variant="outlined">{card}</Card>
+            
+        </Box>
+        
+        
+      </Box>
+      
 
       
       {travelDetails.length > 0 ? (
@@ -94,7 +181,7 @@ const TravelList = ({ commuteCode, depart, arrival }) => {
       ) : (
         <p>No travel details found</p>
       )}
-    </div>
+    </Box>
   );
 };
 
